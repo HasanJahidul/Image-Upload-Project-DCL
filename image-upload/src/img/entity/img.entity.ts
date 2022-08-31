@@ -15,10 +15,12 @@ export class Img {
 
   @Column()
   path: string;
-  @Column()
-  userId: string;
 
-  @ManyToOne(() => User, (user) => user.img)
-  @JoinTable({ name: 'UserId' })
+  //hide this field
+  @Column({ select: false })
+  userId: number;
+
+  @ManyToOne(() => User, (user) => user.imgs, { onDelete: 'CASCADE' })
+  @JoinTable()
   user: User;
 }

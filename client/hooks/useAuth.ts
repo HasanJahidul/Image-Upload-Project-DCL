@@ -11,7 +11,7 @@ const useAuth = () => {
         id:
           | import("F:/MyWork/DCL/Image-Upload-Project-DCL/client/types").IUser
           | null;
-        email: string;
+        name: string;
       }
     | null
     | undefined
@@ -24,6 +24,8 @@ const useAuth = () => {
       .then((res) => res.data)
       .then(setUser)
       .catch((error) => {
+        console.log(error);
+
         if (
           error instanceof AxiosError &&
           !!error.response &&

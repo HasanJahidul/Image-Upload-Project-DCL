@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
 import { User } from './auth/entity/user.entity';
+import { Img } from './img/entity/img.entity';
 import { ImgModule } from './img/img.module';
 
 @Module({
@@ -16,7 +17,7 @@ import { ImgModule } from './img/img.module';
       username: 'root',
       password: '',
       database: 'dcl',
-      entities: [User],
+      entities: [User, Img],
       synchronize: true,
     }),
   ],

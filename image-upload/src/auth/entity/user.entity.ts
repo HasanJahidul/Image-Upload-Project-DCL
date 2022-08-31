@@ -25,13 +25,6 @@ export class User {
   password: string;
 
   //one user has many images
-  @OneToOne(() => Img, (img) => img.user, { cascade: true })
-  img: Img[];
-
-  addImg(img: Img) {
-    if (this.img === null) {
-      this.img = new Array<Img>();
-    }
-    this.img.push(img);
-  }
+  @OneToMany(() => Img, (img) => img.user)
+  imgs: Img[];
 }

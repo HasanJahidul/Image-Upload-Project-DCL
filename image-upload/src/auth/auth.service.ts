@@ -10,7 +10,6 @@ import { User } from './entity/user.entity';
 export class AuthService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
-    private imgService: ImgService,
     private jwtService: JwtService,
   ) {}
 
@@ -37,20 +36,45 @@ export class AuthService {
     return user;
   }
   allUser(): Promise<User[]> {
-    return this.userRepository.find();
+    // return this.userRepository.find();
+    return this.userRepository
+      .createQueryBuilder('user')
+      .where('user.id = :id', { id: 1 })
+      .leftJoinAndSelect('user.imgs', 'img')
+      .getMany();
   }
 
   async login(user: any) {
-    const payload = { username: user.username, sub: user.userId };
+    const payload = { name: user.name, id: user.id };
     return {
       access_token: this.jwtService.sign(payload),
     };
   }
 
-  getImgByUserId(userId: number) {
-    return this.userRepository.findOne({
-      where: { id: userId },
-      relations: ['imgs'],
-    });
+  //decode token
+  async decodeToken(token: string) {
+    return this.jwtService.decode(token);
+  }
+
+  //logout
+  async logout(token: string) {
+    //destroy token
+    return 'logout';
+  }
+
+  //refresh token
+  async refreshToken(user: any) {
+    const payload = { name: user.name, id: user.id };
+    return {
+      access_token: this.jwtService.sign(payload),
+    };
+  }
+
+  async getUserByID(id: number): Promise<User[]> {
+    return this.userRepository
+      .createQueryBuilder('user')
+      .where('user.id = :id', { id: id })
+      .leftJoinAndSelect('user.imgs', 'img')
+      .getMany();
   }
 }

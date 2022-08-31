@@ -13,12 +13,13 @@ import toast from "react-hot-toast";
 
 const SignInPage = () => {
   const { user } = useAuth();
+
   const emailInputController = useInput();
   const passwordInputController = useInput();
   const router = useRouter();
   const handleLogin = async () => {
     try {
-      const { data: response } = await authService.post(`auth/sign-in`, {
+      const { data: response } = await authService.post(`auth/login`, {
         email: emailInputController.value,
         password: passwordInputController.value,
       });
@@ -40,10 +41,7 @@ const SignInPage = () => {
         className="w-screen h-screen flex justify-center items-center
     bg-gradient-to-br from-purple-700 to-amber-700"
       >
-        <form
-          className="p-10 bg-white rounded-xl drop-shadow-lg space-y-5"
-          action=""
-        >
+        <div className="p-10 bg-white rounded-xl drop-shadow-lg space-y-5">
           <h1 className="text-center text-3xl">Log In</h1>
           <div className="flex flex-col space-y-2">
             <label className="text-sm ">Email</label>
@@ -53,6 +51,7 @@ const SignInPage = () => {
               placeholder="Your Email"
               name="email"
               id="email"
+              {...emailInputController}
             />
           </div>
           <div className="flex flex-col space-y-2">
@@ -63,6 +62,7 @@ const SignInPage = () => {
               placeholder="Your Password"
               name="password"
               id="password"
+              {...passwordInputController}
             />
           </div>
 
@@ -70,6 +70,7 @@ const SignInPage = () => {
             className="w-full px-10 py-2 bg-blue-600 text-white rounded-md
             hover:bg-blue-500 hover:drop-shadow-md duration-300 ease-in"
             type="submit"
+            onClick={handleLogin}
           >
             Sign In
           </button>
@@ -82,7 +83,7 @@ const SignInPage = () => {
               </a>
             </Link>
           </p>
-        </form>
+        </div>
       </div>
     );
 };
