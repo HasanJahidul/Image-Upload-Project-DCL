@@ -1,5 +1,13 @@
 /* eslint-disable prettier/prettier */
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  JoinTable,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Img } from '../../img/entity/img.entity';
 
 @Entity()
@@ -17,6 +25,13 @@ export class User {
   password: string;
 
   //one user has many images
-  // @OneToMany(() => Img, (img) => img.user)
-  // img!: Img[];
+  @OneToOne(() => Img, (img) => img.user, { cascade: true })
+  img: Img[];
+
+  addImg(img: Img) {
+    if (this.img === null) {
+      this.img = new Array<Img>();
+    }
+    this.img.push(img);
+  }
 }

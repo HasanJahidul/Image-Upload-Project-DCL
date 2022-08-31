@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ImgService } from '../img/img.service';
 import { Repository } from 'typeorm';
 import { SignupDto } from './dto/auth.dto';
 import { User } from './entity/user.entity';
@@ -9,6 +10,7 @@ import { User } from './entity/user.entity';
 export class AuthService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
+    private imgService: ImgService,
     private jwtService: JwtService,
   ) {}
 
@@ -43,5 +45,12 @@ export class AuthService {
     return {
       access_token: this.jwtService.sign(payload),
     };
+  }
+
+  getImgByUserId(userId: number) {
+    return this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['imgs'],
+    });
   }
 }

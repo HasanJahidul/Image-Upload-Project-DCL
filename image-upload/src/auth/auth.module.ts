@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ImgModule } from '../img/img.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { jwtConstants } from './constants';
@@ -14,11 +15,13 @@ import { LocalStrategy } from './local.strategy';
   providers: [AuthService, LocalStrategy, JwtStrategy],
   imports: [
     TypeOrmModule.forFeature([User]),
+    ImgModule,
     PassportModule,
     JwtModule.register({
       secret: jwtConstants.secret,
       signOptions: { expiresIn: '60s' },
     }),
   ],
+  exports: [AuthService],
 })
 export class AuthModule {}
