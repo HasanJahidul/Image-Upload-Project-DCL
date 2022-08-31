@@ -18,5 +18,5 @@ export class User {
 
   //one user has many images
   // @OneToMany(() => Img, (img) => img.user)
-  // img: Img[];
+  // img!: Img[];
 }

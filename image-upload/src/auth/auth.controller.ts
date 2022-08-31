@@ -5,6 +5,7 @@ import {
   Post,
   UseGuards,
   Request,
+  Req,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
@@ -27,5 +28,11 @@ export class AuthController {
   @Get('/')
   allUser(): Promise<User[]> {
     return this.authService.allUser();
+  }
+  @Post('/save')
+  save(@Req() req: Request) {
+    console.log('sdfsdf');
+    console.log(req.body);
+    return req.body;
   }
 }

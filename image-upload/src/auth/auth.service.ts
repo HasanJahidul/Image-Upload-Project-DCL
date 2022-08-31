@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -23,8 +23,16 @@ export class AuthService {
     return null;
   }
 
-  signUp(signUpDto: SignupDto) {
-    return this.userRepository.save(signUpDto);
+  async signUp(signUpDto: SignupDto) {
+    const validate = await this.userRepository.findOne({
+      where: { email: signUpDto.email },
+    });
+    if (validate) {
+      throw new HttpException('Email already exists', HttpStatus.BAD_REQUEST);
+    }
+    const user = await this.userRepository.create(signUpDto);
+    await this.userRepository.save(user);
+    return user;
   }
   allUser(): Promise<User[]> {
     return this.userRepository.find();
