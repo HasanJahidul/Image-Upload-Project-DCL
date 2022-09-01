@@ -1,3 +1,4 @@
+import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from '../auth/auth.module';
@@ -8,6 +9,6 @@ import { ImgService } from './img.service';
 @Module({
   controllers: [ImgController],
   providers: [ImgService],
-  imports: [TypeOrmModule.forFeature([Img])],
+  imports: [TypeOrmModule.forFeature([Img]), HttpModule],
 })
 export class ImgModule {}
