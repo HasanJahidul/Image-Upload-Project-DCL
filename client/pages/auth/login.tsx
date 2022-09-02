@@ -19,10 +19,11 @@ const SignInPage = () => {
   const router = useRouter();
   const handleLogin = async () => {
     try {
-      const { data: response } = await authService.post(`auth/login`, {
-        email: emailInputController.value,
-        password: passwordInputController.value,
-      });
+      const { data: response } = await authService
+        .post(`auth/login`, {
+          email: emailInputController.value,
+          password: passwordInputController.value,
+        });
       setCookie(ACCESS_TOKEN_COOKIE_KEY, response.access_token);
       setCookie(REFRESH_TOKEN_COOKIE_KEY, response.refresh_token);
       console.log({ response });

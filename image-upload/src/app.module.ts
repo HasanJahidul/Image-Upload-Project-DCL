@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Module } from '@nestjs/common';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -12,8 +13,9 @@ import { ImgModule } from './img/img.module';
   imports: [
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'dist/files'),
-      serveRoot:"/img/download"
-    }),AuthModule,
+      serveRoot: '/img/download',
+    }),
+    AuthModule,
     ImgModule,
     TypeOrmModule.forRoot({
       type: 'mysql',

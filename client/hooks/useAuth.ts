@@ -9,7 +9,7 @@ const useAuth = () => {
   const [user, setUser] = useState<
     | {
         id:
-          | import("F:/MyWork/DCL/Image-Upload-Project-DCL/client/types").IUser
+          | import("../types").IUser
           | null;
         name: string;
       }

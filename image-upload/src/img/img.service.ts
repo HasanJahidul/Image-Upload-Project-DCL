@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Injectable, Res } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -11,8 +12,10 @@ import { HttpService } from '@nestjs/axios';
 
 @Injectable()
 export class ImgService {
-  constructor(@InjectRepository(Img) private imgRepository: Repository<Img>,
-  private readonly httpService: HttpService,) {}
+  constructor(
+    @InjectRepository(Img) private imgRepository: Repository<Img>,
+    private readonly httpService: HttpService,
+  ) {}
 
   //get all img
   async getImg(): Promise<Img[]> {
@@ -23,36 +26,39 @@ export class ImgService {
   }
 
   //save img
-  save(imgDto: ImgDto) {
-    // console.log(path, userId);
+  async save(imgDto: ImgDto) {
+    const filename = await this.upload(imgDto.url);
+    console.log('file' + JSON.stringify(filename));
 
-    // return path + userId;
-    // return this.imgRepository.save(imgDto);
-    const path = this.saveImageToServerExpress(imgDto.url);
-    //inject imgDto to img entity
-    // const img = new Img();
-    // img.path = imgDto.url;
-    // img.userId = imgDto.userId;
-    // console.log(img);
-
-    return path;
+    const img = new Img();
+    img.path = filename.toString();
+    console.log('Path' + img.path);
+    img.userId = imgDto.userId;
+    return await this.imgRepository.save(img);
   }
   getImgById(id: number) {
     return this.imgRepository.find({ where: { userId: id } });
   }
   //Upload image to server with nest js
-  async upload(@Res() res: Response,url) {
-    const filename= Date.now() + '.jpg';
-    const path = __dirname + '/../files/' +filename;
+  async upload(url: string) {
+    const filename = Date.now() + '.jpg';
+    const path = __dirname + '/../files/' + filename;
+    console.log('path' + path);
+
+    const dir = __dirname + '/../files/';
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir);
+    }
     const writer = fs.createWriteStream(path);
 
     const response = await this.httpService.axiosRef({
-      url: 'https://scontent.fdac138-1.fna.fbcdn.net/v/t39.30808-6/285676319_102906439119720_5903617344568960875_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=3cHm9bHYPBoAX_pqXlv&_nc_ht=scontent.fdac138-1.fna&oh=00_AT-g-F88N2d06n4DD6czhe1hmgSjq3zk9eRiOWT18sRXOQ&oe=6316B187',
+      url: url,
       method: 'GET',
       responseType: 'stream',
     });
-
     response.data.pipe(writer);
-    return res.json(filename);
+
+    // response.data.pipe(writer);
+    return filename;
   }
 }

@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {
   Body,
   Controller,
@@ -5,7 +6,6 @@ import {
   Post,
   UseGuards,
   Req,
-  Res,
   HttpStatus,
   HttpException,
   Param,
@@ -14,7 +14,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { SignupDto } from './dto/auth.dto';
 import { User } from './entity/user.entity';
-import { Request, Response } from 'express';
+import { Request } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -29,21 +29,12 @@ export class AuthController {
   signUp(@Body() signUpDto: SignupDto): Promise<User> {
     return this.authService.signUp(signUpDto);
   }
-  @Get('/all')
-  // @UseGuards(AuthGuard('jwt'))
-  allUser(): Promise<User[]> {
-    return this.authService.allUser();
-  }
+
   @Get('/getUserByID/:id')
   getUserByID(@Param('id') id): Promise<User[]> {
     return this.authService.getUserByID(id);
   }
-  @Post('/save')
-  save(@Req() req: Request) {
-    console.log('sdfsdf');
-    console.log(req.body);
-    return req.body;
-  }
+
   @Get('/current-user')
   async currentUser(@Req() req: Request) {
     //decode token\
@@ -65,9 +56,5 @@ export class AuthController {
   @Get('/refresh-token')
   refreshToken(@Req() req: Request) {
     return this.authService.refreshToken(req.headers.authorization);
-  }
-  @Get('/logout')
-  logout(@Req() req: Request) {
-    return this.authService.logout(req.headers.authorization);
   }
 }

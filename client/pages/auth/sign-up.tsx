@@ -23,12 +23,22 @@ const SignUp = () => {
           name: z.string(),
         })
         .parse(config);
-      const res = await authService.post(`auth/signup`, {
-        email,
-        password,
-        name,
-      });
-      
+      const res = await authService
+        .post(`auth/signup`, {
+          email,
+          password,
+          name,
+        })
+        .then((res) => {
+          console.log("me" + res);
+
+          // toast.success(res.data.message.jso);
+          router.push("/auth/sign-in");
+        })
+        .catch((err) => {
+          for (var i in err.response.data.message)
+            toast.error(err.response.data.message[i]);
+        });
     } catch (error) {
       console.log(error);
       if (error instanceof ZodError) {

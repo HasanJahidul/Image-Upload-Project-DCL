@@ -14,6 +14,12 @@ export class AuthService {
   ) {}
 
   async validateUser(email, pass): Promise<any> {
+    if (email == '' || pass == '') {
+      throw new HttpException(
+        'Email or Password is empty',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     const user = await this.userRepository.findOne({
       where: { email: email },
     });
@@ -35,14 +41,6 @@ export class AuthService {
     await this.userRepository.save(user);
     return user;
   }
-  allUser(): Promise<User[]> {
-    // return this.userRepository.find();
-    return this.userRepository
-      .createQueryBuilder('user')
-      .where('user.id = :id', { id: 1 })
-      .leftJoinAndSelect('user.imgs', 'img')
-      .getMany();
-  }
 
   async login(user: any) {
     const payload = { name: user.name, id: user.id };
@@ -54,12 +52,6 @@ export class AuthService {
   //decode token
   async decodeToken(token: string) {
     return this.jwtService.decode(token);
-  }
-
-  //logout
-  async logout(token: string) {
-    //destroy token
-    return 'logout';
   }
 
   //refresh token
