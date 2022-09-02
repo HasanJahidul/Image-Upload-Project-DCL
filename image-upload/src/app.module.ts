@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
+import { ServeStaticModule } from '@nestjs/serve-static';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { join } from 'path';
 import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
 import { User } from './auth/entity/user.entity';
@@ -8,7 +10,10 @@ import { ImgModule } from './img/img.module';
 
 @Module({
   imports: [
-    AuthModule,
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'dist/files'),
+      serveRoot:"/img/download"
+    }),AuthModule,
     ImgModule,
     TypeOrmModule.forRoot({
       type: 'mysql',

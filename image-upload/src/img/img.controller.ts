@@ -46,7 +46,8 @@ export class ImgController {
   }
   @Get('/down')
   async downloadImage(@Res() res: Response) {
-    const path = __dirname + '/../files/' + Date.now() + '.jpg';
+    const filename= Date.now() + '.jpg';
+    const path = __dirname + '/../files/' +filename;
     const writer = fs.createWriteStream(path);
 
     const response = await this.httpService.axiosRef({
@@ -55,14 +56,7 @@ export class ImgController {
       responseType: 'stream',
     });
 
-    const a = response.data.pipe(writer);
-    console.log(a.path);
-
-    return res.json(a.path);
-
-    // return new Promise((resolve, reject) => {
-    //   writer.on('finish', resolve);
-    //   writer.on('error', reject);
-    // });
+    response.data.pipe(writer);
+    return res.json(filename);
   }
 }

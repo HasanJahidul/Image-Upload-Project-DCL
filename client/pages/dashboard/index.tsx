@@ -7,12 +7,19 @@ import useAuth from "../../hooks/useAuth";
 import { jsxService } from "../../service";
 import { IImg } from "../../types";
 import Nav from "../../component/nav";
+import Modal from "../../component/modal/inedx"
 import {
   ACCESS_TOKEN_COOKIE_KEY,
   REFRESH_TOKEN_COOKIE_KEY,
 } from "../../consts";
 
 const Dashboard = () => {
+  const [showModal, setShowModal] = useState(false);
+  const getUrlFileExtension = (url: string) => {
+    return new URL(url).pathname.substring(
+      new URL(url).pathname.lastIndexOf(".") + 1
+    );
+  };
   const router = useRouter();
   const { tokenRefreshed, user } = useAuth();
   console.log(user, tokenRefreshed);
@@ -48,7 +55,7 @@ const Dashboard = () => {
         <>
           <div className="w-screen h-screen mx-auto  lg:px-0 bg-gradient-to-br from-purple-700 to-amber-700">
             <div className=" bg-white w-screen h-12 pt-0 flex justify-center items-center">
-              <button className="bg-blue-500 hover:bg-blue-700 font-bold py-2 px-4 border border-blue-700 rounded">
+              <button className="bg-blue-500 hover:bg-blue-700 font-bold py-2 px-4 border border-blue-700 rounded" onClick={() => setShowModal(true)}>
                 Button
               </button>
               <h1>name: {user.name}</h1>
@@ -69,6 +76,7 @@ const Dashboard = () => {
                 </div>
               ))}
             </div>
+            <Modal setShow={setShowModal} showModal={showModal}></Modal>
           </div>
         </>
       );
