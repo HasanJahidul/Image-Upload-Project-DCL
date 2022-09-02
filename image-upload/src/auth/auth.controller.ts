@@ -30,7 +30,7 @@ export class AuthController {
     return this.authService.signUp(signUpDto);
   }
   @Get('/all')
-  @UseGuards(AuthGuard('jwt'))
+  // @UseGuards(AuthGuard('jwt'))
   allUser(): Promise<User[]> {
     return this.authService.allUser();
   }
