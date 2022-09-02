@@ -1,16 +1,18 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Injectable } from '@nestjs/common';
+import { Injectable, Res } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ImgDto } from './dto/img.dto';
 import { Img } from './entity/img.entity';
 import * as fs from 'fs';
 import * as https from 'https';
-import { response } from 'express';
+import { Response } from 'express';
+import { HttpService } from '@nestjs/axios';
 
 @Injectable()
 export class ImgService {
-  constructor(@InjectRepository(Img) private imgRepository: Repository<Img>) {}
+  constructor(@InjectRepository(Img) private imgRepository: Repository<Img>,
+  private readonly httpService: HttpService,) {}
 
   //get all img
   async getImg(): Promise<Img[]> {
@@ -38,38 +40,19 @@ export class ImgService {
   getImgById(id: number) {
     return this.imgRepository.find({ where: { userId: id } });
   }
-  //save image to server with nest js
-  saveImageToServer(url: string) {
-    const dest = '../files/';
-    const file = fs.createWriteStream(dest);
-    const request = https
-      .get(url, function (response: any) {
-        response.pipe(file);
-        file.on('finish', function () {
-          file.close(); // close() is async, call cb after close completes.
-        });
-      })
-      .on('error', function (err) {
-        // Handle errors
-        console.log(err);
-      });
-  }
-
   //Upload image to server with nest js
-  saveImageToServerExpress(url: string) {
-    const dest = '../files/';
-    const file = fs.createWriteStream(dest);
-    const request = https
-      .get(url, function (response: any) {
-        response.pipe(file);
-        file.on('finish', function () {
-          file.close(); // close() is async, call cb after close completes.
-        });
-      })
-      .on('error', function (err) {
-        // Handle errors
-        console.log(err);
-      });
-    return request;
+  async upload(@Res() res: Response,url) {
+    const filename= Date.now() + '.jpg';
+    const path = __dirname + '/../files/' +filename;
+    const writer = fs.createWriteStream(path);
+
+    const response = await this.httpService.axiosRef({
+      url: 'https://scontent.fdac138-1.fna.fbcdn.net/v/t39.30808-6/285676319_102906439119720_5903617344568960875_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=3cHm9bHYPBoAX_pqXlv&_nc_ht=scontent.fdac138-1.fna&oh=00_AT-g-F88N2d06n4DD6czhe1hmgSjq3zk9eRiOWT18sRXOQ&oe=6316B187',
+      method: 'GET',
+      responseType: 'stream',
+    });
+
+    response.data.pipe(writer);
+    return res.json(filename);
   }
 }

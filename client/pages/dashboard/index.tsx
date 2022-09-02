@@ -6,7 +6,6 @@ import React, { useEffect, useState } from "react";
 import useAuth from "../../hooks/useAuth";
 import { jsxService } from "../../service";
 import { IImg } from "../../types";
-import Nav from "../../component/nav";
 import Modal from "../../component/modal/inedx"
 import {
   ACCESS_TOKEN_COOKIE_KEY,
@@ -14,17 +13,14 @@ import {
 } from "../../consts";
 
 const Dashboard = () => {
+  
   const [showModal, setShowModal] = useState(false);
-  const getUrlFileExtension = (url: string) => {
-    return new URL(url).pathname.substring(
-      new URL(url).pathname.lastIndexOf(".") + 1
-    );
-  };
+
   const router = useRouter();
   const { tokenRefreshed, user } = useAuth();
   console.log(user, tokenRefreshed);
   const [img, setimg] = useState<
-    undefined | null | { id: number; path: string }
+    undefined | null | { id: number; path: string }[]
   >(undefined);
 
   const handleLogoutCLick = async () => {

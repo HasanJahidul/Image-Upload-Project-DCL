@@ -1,10 +1,34 @@
 import Link from "next/link";
+import toast from "react-hot-toast";
 import useInput from "../../hooks/useInput";
+import { jsxService } from "../../service";
 
 export default function QRcode({ setShow,showModal,}: {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
   showModal: boolean;
 }) {
+  const getUrlFileExtension = (url: string) => {
+    const res= new URL(url).pathname.substring(
+      new URL(url).pathname.lastIndexOf(".") + 1
+    );
+    console.log(res);
+    return res;
+  };
+  const uploadImg = (url:string)=>{
+    const ext=getUrlFileExtension(url)
+    if(ext=='jpg'||ext=='png'){
+      jsxService()
+        .get(`/img/upload/${url}`)
+        .then((res) => res.data)
+        .catch((err) => {
+          console.log({ err });
+        });
+    }else{
+      toast.error("Invalid Image Link")
+    }
+
+    };
+  
   const LinkInputController = useInput();
   return (
     <div className={`overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 md:inset-0 transition-all duration-300 ${
@@ -49,13 +73,13 @@ export default function QRcode({ setShow,showModal,}: {
                 size={500}
               /> */}
               <div className="p-10 bg-white rounded-xl drop-shadow-lg space-y-5">
-          <h1 className="text-center text-3xl">Log In</h1>
+          <h1 className="text-center text-3xl">Add Image</h1>
           <div className="flex flex-col space-y-2">
-            <label className="text-sm ">Email</label>
+            <label className="text-sm ">Link</label>
             <input
               className="w-96 px-3 py-2 rounded-md border border-slate-400"
               type="email"
-              placeholder="Your Email"
+              placeholder="Enter Image Link"
               name="email"
               id="email"
               {...LinkInputController}
@@ -66,19 +90,10 @@ export default function QRcode({ setShow,showModal,}: {
             className="w-full px-10 py-2 bg-blue-600 text-white rounded-md
             hover:bg-blue-500 hover:drop-shadow-md duration-300 ease-in"
             type="submit"
-            // onClick={handleLogin}
+            onClick={()=>getUrlFileExtension(LinkInputController.value)}
           >
-            Sign In
+            Add
           </button>
-
-          <p className="text-right">
-            dont have an account?
-            <Link href="/auth/sign-up">
-              <a className="text-blue-600 text-lg font-bold hover:underline ">
-                Sign Up
-              </a>
-            </Link>
-          </p>
         </div>
 
               {/*end*/}
